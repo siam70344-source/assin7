@@ -5,8 +5,6 @@ import Stats from "./pages/Stats";
 import FriendDetails from "./pages/FriendDetails";
 import NotFound from "./pages/NotFound";
 
-
-<Route path="/friend/:id" element={<FriendDetails />} />
 function App() {
   return (
     <BrowserRouter>
