@@ -42,9 +42,9 @@ export default function FriendCard({ friend }) {
           ))}
       </div>
 
-      <span className={`text-xs font-bold px-4 py-1 rounded-full border uppercase tracking-wider ${statusClasses[friend.status]}`}>
-        {friend.status}
-      </span>
+      <span className={`text-xs font-bold px-4 py-1 rounded-full border uppercase tracking-wider ${statusClasses[friend.status] || "bg-gray-100 text-gray-600"}`}>
+  {friend.status}
+</span>
     </div>
   );
 }
