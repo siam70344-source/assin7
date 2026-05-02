@@ -6,3 +6,4 @@ export default function SummaryCard({ title, value }) {
     </div>
   );
 }
+import React from "react";

@@ -4,6 +4,7 @@ import Timeline from "./pages/Timeline";
 import Stats from "./pages/Stats";
 import FriendDetails from "./pages/FriendDetails";
 import NotFound from "./pages/NotFound";
+import React from "react";
 
 function App() {
   return (

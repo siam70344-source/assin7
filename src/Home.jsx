@@ -4,6 +4,7 @@ import SummaryCard from "../components/SummaryCard";
 import Loader from "../components/Loader";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import React from "react";
 
 export default function Home() {
   const [friends, setFriends] = useState([]);
