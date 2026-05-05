@@ -1,29 +1,32 @@
-import { createContext, useState, useEffect } from "react";
-import React from "react";
-export const TimelineContext = createContext();
+import React, { createContext, useContext, useState } from 'react';
 
-export default function TimelineProvider({ children }) {
-  // Load from local storage on first run
-  const [timeline, setTimeline] = useState(() => {
-    const saved = localStorage.getItem("keenkeeper_timeline");
-    return saved ? JSON.parse(saved) : [];
-  });
+const TimelineContext = createContext();
 
-  // Save to local storage whenever timeline changes
-  useEffect(() => {
-    localStorage.setItem("keenkeeper_timeline", JSON.stringify(timeline));
-  }, [timeline]);
+const initialTimeline = [
+  { id: 't1', type: 'Meetup', friendName: 'Tom Baker', date: '2026-03-29', friendId: 10 },
+  { id: 't2', type: 'Text', friendName: 'Sarah Chen', date: '2026-03-28', friendId: 5 },
+  { id: 't3', type: 'Meetup', friendName: 'Olivia Martinez', date: '2026-03-26', friendId: 9 },
+  { id: 't4', type: 'Video', friendName: 'Aisha Patel', date: '2026-03-23', friendId: 7 },
+  { id: 't5', type: 'Meetup', friendName: 'Sarah Chen', date: '2026-03-21', friendId: 5 },
+  { id: 't6', type: 'Call', friendName: 'Marcus Johnson', date: '2026-03-19', friendId: 6 },
+  { id: 't7', type: 'Meetup', friendName: 'Aisha Patel', date: '2026-03-17', friendId: 7 },
+  { id: 't8', type: 'Text', friendName: 'Olivia Martinez', date: '2026-03-13', friendId: 9 },
+  { id: 't9', type: 'Call', friendName: 'Lisa Nakamura', date: '2026-03-11', friendId: 3 },
+  { id: 't10', type: 'Call', friendName: 'Sarah Chen', date: '2026-03-11', friendId: 5 },
+  { id: 't11', type: 'Video', friendName: 'Marcus Johnson', date: '2026-03-06', friendId: 6 },
+  { id: 't12', type: 'Video', friendName: "Ryan O'Brien", date: '2026-02-24', friendId: 8 },
+];
 
-  const addEntry = (type, name) => {
+export function TimelineProvider({ children }) {
+  const [timeline, setTimeline] = useState(initialTimeline);
+
+  const addEntry = (type, friendName, friendId) => {
     const newEntry = {
-      id: Date.now(),
+      id: `t${Date.now()}`,
       type,
-      title: `${type} with ${name}`,
-      date: new Date().toLocaleDateString("en-US", { 
-        month: "long", 
-        day: "numeric", 
-        year: "2026" 
-      })
+      friendName,
+      date: new Date().toISOString().split('T')[0],
+      friendId,
     };
     setTimeline(prev => [newEntry, ...prev]);
   };
@@ -33,4 +36,8 @@ export default function TimelineProvider({ children }) {
       {children}
     </TimelineContext.Provider>
   );
+}
+
+export function useTimeline() {
+  return useContext(TimelineContext);
 }

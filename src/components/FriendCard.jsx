@@ -1,51 +1,35 @@
-import { useNavigate } from "react-router-dom";
-import React from "react";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+function StatusBadge({ status }) {
+  const map = {
+    overdue: { label: 'Overdue', className: 'badge-overdue' },
+    'almost due': { label: 'Almost Due', className: 'badge-almost' },
+    'on-track': { label: 'On-Track', className: 'badge-ontrack' },
+  };
+  const { label, className } = map[status] || map['on-track'];
+  return <span className={`badge ${className}`}>{label}</span>;
+}
 
 export default function FriendCard({ friend }) {
   const navigate = useNavigate();
 
-  const statusClasses = {
-    "overdue": "bg-red-100 text-red-600 border-red-200",
-    "almost due": "bg-yellow-100 text-yellow-700 border-yellow-200",
-    "on-track": "bg-green-100 text-green-700 border-green-200"
-  };
-
-  if (!friend) return null; // safety
-
   return (
-    <div
-      onClick={() => navigate(`/friend/${friend.id}`)}
-      className="bg-white p-6 shadow-sm rounded-2xl border border-gray-100 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center"
-    >
+    <div className="friend-card" onClick={() => navigate(`/friend/${friend.id}`)}>
       <img
         src={friend.picture}
-        className="w-20 h-20 rounded-full mx-auto border-4 border-gray-50 shadow-sm"
         alt={friend.name}
+        className="friend-avatar"
+        onError={e => { e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(friend.name)}&background=2d5a3d&color=fff`; }}
       />
-
-      <h2 className="text-xl font-bold text-slate-800 mt-4">
-        {friend.name}
-      </h2>
-
-      <p className="text-gray-400 text-sm mb-4">
-        {friend.days_since_contact}d ago
-      </p>
-
-      <div className="flex flex-wrap justify-center gap-1 mb-4">
-        {Array.isArray(friend.tags) &&
-          friend.tags.map((tag) => (
-            <span
-              key={tag}
-              className="text-[10px] uppercase font-bold px-2 py-0.5 bg-gray-100 text-gray-500 rounded"
-            >
-              {tag}
-            </span>
-          ))}
+      <h3 className="friend-name">{friend.name}</h3>
+      <p className="friend-days">{friend.days_since_contact}d ago</p>
+      <div className="friend-tags">
+        {friend.tags.map(tag => (
+          <span key={tag} className="tag">{tag.toUpperCase()}</span>
+        ))}
       </div>
-
-      <span className={`text-xs font-bold px-4 py-1 rounded-full border uppercase tracking-wider ${statusClasses[friend.status] || "bg-gray-100 text-gray-600"}`}>
-  {friend.status}
- </span>
+      <StatusBadge status={friend.status} />
     </div>
   );
 }

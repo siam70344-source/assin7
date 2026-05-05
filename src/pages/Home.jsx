@@ -1,69 +1,77 @@
-import { useEffect, useState } from "react";
-import FriendCard from "../components/FriendCard";
-import SummaryCard from "../components/SummaryCard";
-import Loader from "../components/Loader";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
+import React, { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
+import FriendCard from '../components/FriendCard';
+import friendsData from '../context/friends.json';
 export default function Home() {
   const [friends, setFriends] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/friends.json")
-      .then(res => res.json())
-      .then(data => {
-        setFriends(data);
-        setLoading(false);
-      });
+    const timer = setTimeout(() => {
+      setFriends(friendsData);
+      setLoading(false);
+    }, 1200);
+    return () => clearTimeout(timer);
   }, []);
 
-  if (loading) return <Loader />;
-
-  // Dynamic calculations for Requirement 2
-  const total = friends.length;
-  const overdue = friends.filter(f => f.status === "overdue").length;
-  const onTrack = friends.filter(f => f.status === "on-track").length;
-  const interactions = 12; 
+  const totalFriends = friends.length;
+  const onTrack = friends.filter(f => f.status === 'on-track').length;
+  const needAttention = friends.filter(f => f.status !== 'on-track').length;
+  const interactionsThisMonth = 12;
 
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <Navbar />
-
-      {/* Banner Section - Requirement 2 */}
-      <div className="text-center py-16 px-4 bg-white border-b border-gray-100">
-        <h1 className="text-5xl font-extrabold text-slate-800 tracking-tight">
-          Friends to keep close in your life
-        </h1>
-        <p className="text-gray-500 mt-4 max-w-2xl mx-auto text-lg">
-          Your personal shelf of meaningful connections. Browse, tend, and nurture the relationships that matter most.
+    <div className="page-container">
+      {/* Banner */}
+      <section className="banner">
+        <h1 className="banner-title">Friends to keep close in your life</h1>
+        <p className="banner-subtitle">
+          Your personal shelf of meaningful connections. Browse, tend, and nurture the<br />
+          relationships that matter most.
         </p>
-
-        <button className="bg-[#2D4A3E] hover:bg-[#1D3D31] text-white px-8 py-3 rounded-lg mt-8 font-semibold flex items-center gap-2 mx-auto transition-all shadow-lg">
-          <span className="text-xl">+</span> Add a Friend
+        <button className="btn-primary">
+          <Plus size={16} />
+          Add a Friend
         </button>
+      </section>
 
-        {/* Summary Cards Grid */}
-        <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6 max-w-6xl mx-auto mt-12 px-4">
-          <SummaryCard title="Total Friends" value={total} />
-          <SummaryCard title="On Track" value={onTrack} />
-          <SummaryCard title="Need Attention" value={overdue} />
-          <SummaryCard title="Interactions This Month" value={interactions} />
+      {/* Summary Cards */}
+      {!loading && (
+        <div className="summary-grid">
+          <div className="summary-card">
+            <span className="summary-number">{totalFriends}</span>
+            <span className="summary-label">Total Friends</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-number">{onTrack}</span>
+            <span className="summary-label">On Track</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-number">{needAttention}</span>
+            <span className="summary-label">Need Attention</span>
+          </div>
+          <div className="summary-card">
+            <span className="summary-number">{interactionsThisMonth}</span>
+            <span className="summary-label">Interactions This Month</span>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Friends Grid - Requirement 4 */}
-      <div className="max-w-7xl mx-auto p-10">
-        <h2 className="text-2xl font-bold text-slate-800 mb-8">Your Friends</h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {friends.map(friend => (
-            <FriendCard key={friend.id} friend={friend} />
-          ))}
-        </div>
-      </div>
-
-      <Footer />
+      {/* Friends Section */}
+      <section className="friends-section">
+        <h2 className="section-title">Your Friends</h2>
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner" />
+            <p className="loading-text">Loading your friends...</p>
+          </div>
+        ) : (
+          <div className="friends-grid">
+            {friends.map(friend => (
+              <FriendCard key={friend.id} friend={friend} />
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

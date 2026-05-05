@@ -1,46 +1,56 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
+import { useTimeline } from '../context/TimelineContext';
 
-const Stats = () => {
-  // Replace these numbers with your actual logic or state if needed
-  const calls = 5; 
-  const texts = 10;
-  const videos = 3;
+const COLORS = ['#7b5ea7', '#1a3c2e', '#4a9a6e'];
+
+export default function Stats() {
+  const { timeline } = useTimeline();
+
+  const counts = { Text: 0, Call: 0, Video: 0 };
+  timeline.forEach(entry => {
+    if (counts[entry.type] !== undefined) counts[entry.type]++;
+  });
 
   const data = [
-    { name: "Call", value: calls },
-    { name: "Text", value: texts },
-    { name: "Video", value: videos }
-  ];
-
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
+    { name: 'Text', value: counts.Text },
+    { name: 'Call', value: counts.Call },
+    { name: 'Video', value: counts.Video },
+  ].filter(d => d.value > 0);
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Interaction Statistics</h2>
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              innerRadius={60}
-              outerRadius={80}
-              paddingAngle={5}
-              dataKey="value"
-            >
-              {data.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+    <div className="page-container">
+      <h1 className="page-title">Friendship Analytics</h1>
+
+      <div className="analytics-card">
+        <h3 className="analytics-subtitle">By Interaction Type</h3>
+        {data.length === 0 ? (
+          <p className="empty-state">No interaction data yet. Log some check-ins!</p>
+        ) : (
+          <ResponsiveContainer width="100%" height={360}>
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                innerRadius={90}
+                outerRadius={150}
+                paddingAngle={4}
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell key={entry.name} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Legend
+                iconType="circle"
+                iconSize={10}
+                formatter={(value) => <span style={{ color: '#444', fontSize: 14 }}>{value}</span>}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );
-};
-
-export default Stats;
+}

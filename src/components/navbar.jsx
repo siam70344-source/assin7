@@ -1,25 +1,32 @@
-import { NavLink } from "react-router-dom";
-import { Home, Clock, BarChart } from "lucide-react";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Home, Clock, BarChart2 } from 'lucide-react';
 
 export default function Navbar() {
-  const activeClass = ({ isActive }) => 
-    `flex items-center gap-2 px-4 py-2 rounded-lg transition ${
-      isActive ? "bg-[#1D3D31] text-white" : "text-gray-600 hover:bg-gray-100"
-    }`;
+  const location = useLocation();
+
+  const links = [
+    { to: '/', label: 'Home', icon: Home },
+    { to: '/timeline', label: 'Timeline', icon: Clock },
+    { to: '/stats', label: 'Stats', icon: BarChart2 },
+  ];
 
   return (
-    <nav className="flex justify-between items-center p-4 px-10 shadow-sm bg-white sticky top-0 z-50">
-      <div className="flex items-center">
-        {/* Path based on my assets folder */}
-        <img src="/assets/logo.png" alt="KeenKeeper" className="h-8" />
-      </div>
-
-      <div className="flex gap-4 font-medium">
-        <NavLink to="/" className={activeClass}><Home size={18}/> Home</NavLink>
-        <NavLink to="/timeline" className={activeClass}><Clock size={18}/> Timeline</NavLink>
-        <NavLink to="/stats" className={activeClass}><BarChart size={18}/> Stats</NavLink>
+    <nav className="navbar">
+      <Link to="/" className="navbar-logo">
+        <span className="logo-keen">Keen</span><span className="logo-keeper">Keeper</span>
+      </Link>
+      <div className="navbar-links">
+        {links.map(({ to, label, icon: Icon }) => {
+          const isActive = location.pathname === to;
+          return (
+            <Link key={to} to={to} className={`nav-link ${isActive ? 'active' : ''}`}>
+              <Icon size={16} />
+              <span>{label}</span>
+            </Link>
+          );
+        })}
       </div>
     </nav>
   );
 }
-import React from "react";
