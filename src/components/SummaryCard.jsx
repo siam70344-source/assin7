@@ -1,3 +1,5 @@
+import React from "react";
+
 export default function SummaryCard({ title, value }) {
   return (
     <div className="bg-white shadow rounded-xl p-5 text-center">
@@ -6,4 +8,3 @@ export default function SummaryCard({ title, value }) {
     </div>
   );
 }
-import React from "react";
